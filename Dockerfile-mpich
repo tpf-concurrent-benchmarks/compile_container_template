@@ -1,0 +1,31 @@
+# Use the official Ubuntu 20.04 image as the base image
+FROM ubuntu:20.04
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update the package list and install essential tools
+RUN apt-get update && apt-get install -y \
+    clang \
+    build-essential \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust and Cargo using rustup
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Add Cargo's bin directory to the PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install MPICH
+RUN apt-get update && apt-get install -y mpich
+
+# Clean up the APT cache to reduce the image size
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set the working directory to /app or your desired directory
+WORKDIR /usr/src/mpi_app
+
+RUN useradd no_root
+
+# Set the default command to execute when the container runs
+CMD ["/bin/bash"]

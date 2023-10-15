@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  app:
+    container_name: mpi_app
+    build:
+      context: .
+      dockerfile: Dockerfile-mpich
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/usr/src/mpi_app
